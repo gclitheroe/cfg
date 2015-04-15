@@ -52,11 +52,13 @@ type WebServer struct {
 
 // SQS for AWS SQS config.  Elements with an env tag can be overidden via env var.  See Load.
 type SQS struct {
-	AWSRegion         string `doc:"SQS region e.g., ap-southeast-2." env:"${PREFIX}_SQS_AWS_REGION"`
-	QueueName         string `doc:"SQS queue name." env:"${PREFIX}_SQS_QUEUE_NAME"`
-	AccessKey         string `doc:"SQS queue user access key." env:"${PREFIX}_SQS_ACCESS_KEY"`
-	SecretKey         string `doc:"SQS queue user secret." env:"${PREFIX}_SQS_SECRET_KEY"`
-	NumberOfListeners int    `doc:"number of SQS listeners." env:"${PREFIX}_SQS_NUMBER_OF_LISTENERS"`
+	AWSRegion           string `doc:"SQS region e.g., ap-southeast-2." env:"${PREFIX}_SQS_AWS_REGION"`
+	QueueName           string `doc:"SQS queue name." env:"${PREFIX}_SQS_QUEUE_NAME"`
+	AccessKey           string `doc:"SQS queue user access key." env:"${PREFIX}_SQS_ACCESS_KEY"`
+	SecretKey           string `doc:"SQS queue user secret." env:"${PREFIX}_SQS_SECRET_KEY"`
+	MaxNumberOfMessages int    `doc:"Number of messages to try to receive from SQS, 1 - 10."`
+	VisibilityTimeout   int    `doc:"Message visibility time out."`
+	WaitTimeSeconds     int    `doc: Wait time for receiving messages.  Max 20.`
 }
 
 type SNS struct {
@@ -114,12 +116,7 @@ func (c *Config) env() {
 //   var config = cfg.Load()
 //
 // If override of config from
-// environment vars would change application behaviour then it may be appropriate to override config elements after Load e.g.,
-//   var config = cfg.Load()
-//
-//   func init() {
-//	config.SQS.NumberOfListeners = 1
-//     }
+// environment vars would change application behaviour then it may be appropriate to override config elements after Load.
 //
 // The config file should be JSON that will parse into Config.  A complete example is shown below.  Objects can be omitted
 // if not required e.g., if there is no SQS object in the JSON then Config will have a nil SQS pointer.  Elements of objects that
@@ -140,8 +137,10 @@ func (c *Config) env() {
 // 		"AWSRegion": "ap-southeast-2",
 // 		"QueueName": "XXX",
 // 		"AccessKey": "XXX",
-// 		"SecretKey": "XXX",
-// 		"NumberOfListeners": 1
+// 		"SecretKey": "XXX"
+// 		"MaxNumberOfMessages": 1,
+// 		"VisibilityTimeout": 600,
+// 		"WaitTimeSeconds": 20,
 // 	},
 // 	"WebServer": {
 // 		"Port": "8080",
