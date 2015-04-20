@@ -25,6 +25,7 @@ type Config struct {
 	Librato    *Librato
 	Logentries *Logentries
 	HeartBeat  *HeartBeat
+	PagerDuty  *PagerDuty
 }
 
 // DataBase for database config.  Elements with an env tag can be overidden via env var.  See Load.
@@ -87,6 +88,11 @@ type Logentries struct {
 	Token string `doc:"token for Logentries." env:"${PREFIX}_LOGENTRIES_TOKEN"`
 }
 
+type PagerDuty struct {
+	ApiToken   string `doc:"PagerDuty api token as per https://developer.pagerduty.com/documentation/rest/authentication" env:"${PREFIX}_PAGERDUTY_TOKEN"`
+	ServiceKey string `doc:"PagerDuty service GUID as per https://developer.pagerduty.com/documentation/integration/events/trigger" env:"${PREFIX}_PAGERDUTY_SERVICE"`
+}
+
 func (c *Config) env() {
 	if c.Env != nil {
 		env(c.Env.Prefix, c.DataBase)
@@ -97,6 +103,7 @@ func (c *Config) env() {
 		env(c.Env.Prefix, c.SNS)
 		env(c.Env.Prefix, c.HeartBeat)
 		env(c.Env.Prefix, c.SC3)
+		env(c.Env.Prefix, c.PagerDuty)
 	}
 }
 
@@ -267,6 +274,7 @@ func (c *Config) EnvDoc() (d []EnvDoc, err error) {
 		d = append(d, envDoc(c.Env.Prefix, c.SNS)...)
 		d = append(d, envDoc(c.Env.Prefix, c.HeartBeat)...)
 		d = append(d, envDoc(c.Env.Prefix, c.SC3)...)
+		d = append(d, envDoc(c.Env.Prefix, c.PagerDuty)...)
 	} else {
 		err = fmt.Errorf("Found nil Prefix in the config.  Don't know how to read env var.")
 	}
