@@ -26,6 +26,7 @@ type Config struct {
 	Logentries *Logentries
 	HeartBeat  *HeartBeat
 	PagerDuty  *PagerDuty
+	SMTP       *SMTP
 }
 
 // DataBase for database config.  Elements with an env tag can be overidden via env var.  See Load.
@@ -93,6 +94,15 @@ type PagerDuty struct {
 	ServiceKey string `doc:"PagerDuty service GUID as per https://developer.pagerduty.com/documentation/integration/events/trigger" env:"${PREFIX}_PAGERDUTY_SERVICE"`
 }
 
+type SMTP struct {
+	Host     string `doc:"The SMTP host." env:"${PREFIX}_SMTP_HOST"`
+	Port     int    `doc:"The SMTP port." env:"${PREFIX}_SMTP_PORT"`
+	UserName string `doc:"The SMTP user." env:"${PREFIX}_SMTP_USER"`
+	Password string `doc:"The SMTP password." env:"${PREFIX}_SMTP_PASSWORD"`
+	From     string `doc:"The from email address" env:"${PREFIX}_SMTP_FROM"`
+	To       string `doc:"The to email address" env:"${PREFIX}_SMTP_TO"`
+}
+
 func (c *Config) env() {
 	if c.Env != nil {
 		env(c.Env.Prefix, c.DataBase)
@@ -104,6 +114,7 @@ func (c *Config) env() {
 		env(c.Env.Prefix, c.HeartBeat)
 		env(c.Env.Prefix, c.SC3)
 		env(c.Env.Prefix, c.PagerDuty)
+		env(c.Env.Prefix, c.SMTP)
 	}
 }
 
@@ -275,6 +286,7 @@ func (c *Config) EnvDoc() (d []EnvDoc, err error) {
 		d = append(d, envDoc(c.Env.Prefix, c.HeartBeat)...)
 		d = append(d, envDoc(c.Env.Prefix, c.SC3)...)
 		d = append(d, envDoc(c.Env.Prefix, c.PagerDuty)...)
+		d = append(d, envDoc(c.Env.Prefix, c.SMTP)...)
 	} else {
 		err = fmt.Errorf("Found nil Prefix in the config.  Don't know how to read env var.")
 	}
