@@ -27,6 +27,7 @@ type Config struct {
 	HeartBeat  *HeartBeat
 	PagerDuty  *PagerDuty
 	SMTP       *SMTP
+	Twitter    *Twitter
 }
 
 // DataBase for database config.  Elements with an env tag can be overidden via env var.  See Load.
@@ -103,6 +104,14 @@ type SMTP struct {
 	To       string `doc:"The to email address" env:"${PREFIX}_SMTP_TO"`
 }
 
+type Twitter struct {
+	ConsumerKey    string  `doc:"The Twitter consumer key." env:"${PREFIX}_TWITTER_CKEY"`
+	ConsumerSecret string  `doc:"The Twitter consumer secret." env:"${PREFIX}_TWITTER_CSECRET"`
+	OAuthToken     string  `doc:"The Twitter OAuth token." env:"${PREFIX}_TWITTER_OTOKEN"`
+	OAuthSecret    string  `doc:"The Twitter OAuth secret." env:"${PREFIX}_TWITTER_OSECRET"`
+	MinMagnitude   float64 `doc:"The minumum magnitude (quake) to send to Twitter." env:"${PREFIX}_TWITTER_THRESHOLD"`
+}
+
 func (c *Config) env() {
 	if c.Env != nil {
 		env(c.Env.Prefix, c.DataBase)
@@ -115,6 +124,7 @@ func (c *Config) env() {
 		env(c.Env.Prefix, c.SC3)
 		env(c.Env.Prefix, c.PagerDuty)
 		env(c.Env.Prefix, c.SMTP)
+		env(c.Env.Prefix, c.Twitter)
 	}
 }
 
@@ -287,6 +297,7 @@ func (c *Config) EnvDoc() (d []EnvDoc, err error) {
 		d = append(d, envDoc(c.Env.Prefix, c.SC3)...)
 		d = append(d, envDoc(c.Env.Prefix, c.PagerDuty)...)
 		d = append(d, envDoc(c.Env.Prefix, c.SMTP)...)
+		d = append(d, envDoc(c.Env.Prefix, c.Twitter)...)
 	} else {
 		err = fmt.Errorf("Found nil Prefix in the config.  Don't know how to read env var.")
 	}
