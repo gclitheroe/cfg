@@ -295,6 +295,13 @@ func env(prefix string, v interface{}) {
 					} else {
 						log.Printf("ERROR parsing %s=%s from env as int: %s", key, val, err)
 					}
+				case reflect.Float64:
+					if f, err := strconv.ParseFloat(val, 64); err == nil {
+						log.Printf("overriding config %s.%s from env %s", e, field.Name, key)
+						sv.Field(i).SetFloat(f)
+					} else {
+						log.Printf("ERROR parsing %s=%s from env as float64: %s", key, val, err)
+					}
 				case reflect.Bool:
 					if b, err := strconv.ParseBool(val); err == nil {
 						log.Printf("overriding config %s.%s from env %s", e, field.Name, key)
