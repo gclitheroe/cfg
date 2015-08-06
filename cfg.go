@@ -132,10 +132,8 @@ type S3 struct {
 }
 
 type SeiscompmlS3 struct {
-	CheckInterval  int    `doc:"Check folder interval" env:"${PREFIX}_SEIS_INTERVAL"`
-	InDir          string `doc:"Input directory" env:"${PREFIX}_SEIS_IN_DIR"`
-	OutDir         string `doc:"Output directory" env:"${PREFIX}_SEIS_OUT_DIR"`
-	UnprocessedDir string `doc:"Unprocess directory" env:"${PREFIX}_SEIS_UNPROCESS_DIR"`
+	CheckInterval int    `doc:"Check folder interval" env:"${PREFIX}_SEIS_INTERVAL"`
+	SpoolDir      string `doc:"Spool directory" env:"${PREFIX}_SEIS_SPOOL_DIR"`
 }
 
 func (c *Config) env() {
