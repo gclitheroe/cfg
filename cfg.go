@@ -19,21 +19,22 @@ var over = "/etc/sysconfig"
 var Build string
 
 type Config struct {
-	DataBase     *DataBase
-	WebServer    *WebServer
-	SQS          *SQS
-	SNS          *SNS
-	SC3          *SC3
-	Env          *Env
-	Librato      *Librato
-	Logentries   *Logentries
-	HeartBeat    *HeartBeat
-	PagerDuty    *PagerDuty
-	SMTP         *SMTP
-	Twitter      *Twitter
-	UA           *UA
-	S3           *S3
-	SeiscompmlS3 *SeiscompmlS3
+	DataBase           *DataBase
+	WebServer          *WebServer
+	SQS                *SQS
+	SNS                *SNS
+	SC3                *SC3
+	Env                *Env
+	Librato            *Librato
+	Logentries         *Logentries
+	HeartBeat          *HeartBeat
+	PagerDuty          *PagerDuty
+	SMTP               *SMTP
+	Twitter            *Twitter
+	UA                 *UA
+	S3                 *S3
+	SeiscompmlS3       *SeiscompmlS3
+	GoogleCustomSearch *GoogleCustomSearch
 }
 
 // DataBase for database config.  Elements with an env tag can be overidden via env var.  See Load.
@@ -138,6 +139,11 @@ type SeiscompmlS3 struct {
 	UnprocessedDir string `doc:"Unprocess directory" env:"${PREFIX}_SEIS_UNPROCESS_DIR"`
 }
 
+type GoogleCustomSearch struct {
+	Cx  string `doc:"Google Custom Search Id" env:"${PREFIX}_CSE_CX"`
+	Key string `doc:"Server api key from Google Developer Console" env:"${PREFIX}_CSE_KEY"`
+}
+
 func (c *Config) env() {
 	if c.Env != nil {
 		env(c.Env.Prefix, c.DataBase)
@@ -154,6 +160,7 @@ func (c *Config) env() {
 		env(c.Env.Prefix, c.UA)
 		env(c.Env.Prefix, c.S3)
 		env(c.Env.Prefix, c.SeiscompmlS3)
+		env(c.Env.Prefix, c.GoogleCustomSearch)
 	}
 }
 
@@ -337,6 +344,7 @@ func (c *Config) EnvDoc() (d []EnvDoc, err error) {
 		d = append(d, envDoc(c.Env.Prefix, c.UA)...)
 		d = append(d, envDoc(c.Env.Prefix, c.S3)...)
 		d = append(d, envDoc(c.Env.Prefix, c.SeiscompmlS3)...)
+		d = append(d, envDoc(c.Env.Prefix, c.GoogleCustomSearch)...)
 	} else {
 		err = fmt.Errorf("Found nil Prefix in the config.  Don't know how to read env var.")
 	}
