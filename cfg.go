@@ -35,6 +35,7 @@ type Config struct {
 	S3                 *S3
 	SeiscompmlS3       *SeiscompmlS3
 	GoogleCustomSearch *GoogleCustomSearch
+	FeltReport         *FeltReport
 }
 
 // DataBase for database config.  Elements with an env tag can be overidden via env var.  See Load.
@@ -144,6 +145,12 @@ type GoogleCustomSearch struct {
 	Key string `doc:"Server api key from Google Developer Console" env:"${PREFIX}_CSE_KEY"`
 }
 
+type FeltReport struct {
+	GooglePlaceKey     string `doc:"Secret Key for Google Place Search"`
+	ReCaptchaSiteKey   string `doc:"Site Key for reCAPTCHA"`
+	ReCaptchaSecretKey string `doc:"Secret Key for reCAPTCHA"`
+}
+
 func (c *Config) env() {
 	if c.Env != nil {
 		env(c.Env.Prefix, c.DataBase)
@@ -161,6 +168,7 @@ func (c *Config) env() {
 		env(c.Env.Prefix, c.S3)
 		env(c.Env.Prefix, c.SeiscompmlS3)
 		env(c.Env.Prefix, c.GoogleCustomSearch)
+		env(c.Env.Prefix, c.FeltReport)
 	}
 }
 
@@ -345,6 +353,7 @@ func (c *Config) EnvDoc() (d []EnvDoc, err error) {
 		d = append(d, envDoc(c.Env.Prefix, c.S3)...)
 		d = append(d, envDoc(c.Env.Prefix, c.SeiscompmlS3)...)
 		d = append(d, envDoc(c.Env.Prefix, c.GoogleCustomSearch)...)
+		d = append(d, envDoc(c.Env.Prefix, c.FeltReport)...)
 	} else {
 		err = fmt.Errorf("Found nil Prefix in the config.  Don't know how to read env var.")
 	}
