@@ -146,9 +146,9 @@ type GoogleCustomSearch struct {
 }
 
 type FeltReport struct {
-	GooglePlaceKey     string `doc:"Secret Key for Google Place Search"`
-	ReCaptchaSiteKey   string `doc:"Site Key for reCAPTCHA"`
-	ReCaptchaSecretKey string `doc:"Secret Key for reCAPTCHA"`
+	GooglePlaceKey     string `doc:"Secret Key for Google Place Search" env:"${PREFIX}_FELT_GOOGLE_KEY"`
+	ReCaptchaSiteKey   string `doc:"Site Key for reCAPTCHA" env:"${PREFIX}_FELT_RECAPTCHA_KEY"`
+	ReCaptchaSecretKey string `doc:"Secret Key for reCAPTCHA" env:"${PREFIX}_FELT_RECAPTCHA_SECRET"`
 }
 
 func (c *Config) env() {
