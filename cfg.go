@@ -36,6 +36,7 @@ type Config struct {
 	SeiscompmlS3       *SeiscompmlS3
 	GoogleCustomSearch *GoogleCustomSearch
 	FeltReport         *FeltReport
+	SocialMedia        *SocialMedia
 }
 
 // DataBase for database config.  Elements with an env tag can be overidden via env var.  See Load.
@@ -151,6 +152,12 @@ type FeltReport struct {
 	ReCaptchaSecretKey string `doc:"Secret Key for reCAPTCHA" env:"${PREFIX}_FELT_RECAPTCHA_SECRET"`
 }
 
+type SocialMedia struct {
+	FacebookAppId string `doc:"Facebook app_id for sharing link" env:"${PREFIX}_SOCIAL_FBID"`
+	TwitterId     string `doc:"Twitter id. eg: @geonet" env:"${PREFIX}_SOCIAL_TWITTERID"`
+	Origin        string `doc:"The site origin Url root for 'twitter:url' tag. eg: http://www.geonet.org.nz." env:"${PREFIX}_SOCIAL_ORIGIN"`
+}
+
 func (c *Config) env() {
 	if c.Env != nil {
 		env(c.Env.Prefix, c.DataBase)
@@ -169,6 +176,7 @@ func (c *Config) env() {
 		env(c.Env.Prefix, c.SeiscompmlS3)
 		env(c.Env.Prefix, c.GoogleCustomSearch)
 		env(c.Env.Prefix, c.FeltReport)
+		env(c.Env.Prefix, c.SocialMedia)
 	}
 }
 
@@ -354,6 +362,7 @@ func (c *Config) EnvDoc() (d []EnvDoc, err error) {
 		d = append(d, envDoc(c.Env.Prefix, c.SeiscompmlS3)...)
 		d = append(d, envDoc(c.Env.Prefix, c.GoogleCustomSearch)...)
 		d = append(d, envDoc(c.Env.Prefix, c.FeltReport)...)
+		d = append(d, envDoc(c.Env.Prefix, c.SocialMedia)...)
 	} else {
 		err = fmt.Errorf("Found nil Prefix in the config.  Don't know how to read env var.")
 	}
